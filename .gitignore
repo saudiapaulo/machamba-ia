@@ -1,0 +1,34 @@
+# --- Segredos ---
+.env
+
+# --- Ambiente virtual e cache do Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# --- Modelo treinado (grande, gerado no Colab) ---
+models/*
+!models/.gitkeep
+
+# --- Base vectorial (gerada pela ingestão) ---
+data/chroma/*
+!data/chroma/.gitkeep
+
+# --- Datasets de imagens ---
+data/dataset/
+data/datasets/
+*.zip
+
+# --- Base de dados local e fotos recebidas ---
+*.db
+*.sqlite3
+data/fotos/
+
+# --- Editores e sistema ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/

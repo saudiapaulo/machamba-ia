@@ -1,0 +1,34 @@
+# ============================================================
+# Machamba IA — dependências
+# Só estão activas as dependências da fase actual.
+# As restantes ficam comentadas e são instaladas na fase indicada.
+# ============================================================
+
+# --- Fase 0: API base e testes ---
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+pydantic-settings>=2.4,<3.0
+httpx>=0.27,<1.0          # necessário para o TestClient do FastAPI
+pytest>=8.0,<9.0
+
+# --- Fase 2: serviço de diagnóstico (visão) ---
+# torch
+# timm
+# pillow
+# python-multipart        # para receber ficheiros (fotos) no FastAPI
+
+# --- Fase 3: RAG e LLM ---
+# anthropic
+# sentence-transformers
+# chromadb
+# pymupdf
+
+# --- Fase 4: base de dados e bot do Telegram ---
+# sqlalchemy
+# python-telegram-bot
+
+# --- Fase 5: painel do técnico ---
+# streamlit
+
+# --- Fase 6: alertas meteorológicos ---
+# apscheduler
