@@ -87,7 +87,12 @@ Crop Pest and Disease Detection (Gana): https://data.mendeley.com/datasets/bwh3z
 ## Estado actual
 (Actualiza esta secção no fim de cada fase.)
 - [x] Fase 0 — Estrutura do projecto
-- [ ] Fase 1 — Notebook de treino do modelo
+- [x] Fase 1 — Notebook de treino do modelo
+  - EfficientNet-B0, Raw Data CCMT: 25 126 imagens válidas (94 corrompidas excluídas), divisão 70/15/15, melhor época 9 de 13 (early stopping).
+  - Teste: **accuracy 0.914**, **F1 macro 0.910**.
+  - Accuracy por cultura: caju 0.975, mandioca 0.954, milho 0.871, tomate 0.832.
+  - Confusões principais: Maize leaf blight ↔ leaf spot (68 no total, nos dois sentidos); doenças do tomate entre si (septoria leaf spot → leaf blight, leaf curl, verticillium wilt; leaf blight → verticillium wilt); Cassava bacterial blight → brown spot (21).
+  - Ficheiros em `models/`: `machamba_efficientnet_b0.pt`, `labels.json`, `metrics.json`, `confusion_matrix.png`.
 - [ ] Fase 2 — Serviço de diagnóstico
 - [ ] Fase 3 — RAG
 - [ ] Fase 4 — Bot do Telegram
