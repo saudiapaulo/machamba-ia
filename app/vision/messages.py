@@ -1,33 +1,41 @@
 """Nomes em português e mensagens para o agricultor.
 
-⚠️ Os nomes das doenças são uma proposta e têm de ser validados por um
-extensionista: os nomes usados no campo variam de região para região.
+⚠️ TODOS os nomes das doenças têm de ser validados por um extensionista:
+os nomes usados no campo variam de região para região.
+
+Estado de cada nome (no comentário ao lado):
+- "confirmado (fonte)": confirmado numa fonte indicada (ex.: manual do IIAM/FAO);
+- "técnico, por confirmar localmente": nome técnico correcto, mas falta saber
+  se é o nome que os agricultores e extensionistas usam em Moçambique;
+- "ambíguo": a classe do dataset é genérica e o nome pode corresponder a
+  várias pragas/doenças diferentes.
+Nenhum nome está ainda "confirmado": quando um for, actualiza o comentário com a fonte.
 """
 
 # Chave: o campo "folder" do labels.json (não muda com as correcções de ortografia).
 DISEASE_NAMES_PT: dict[str, str] = {
-    "Cashew/anthracnose": "antracnose",
-    "Cashew/gumosis": "gomose",
-    "Cashew/healthy": "planta saudável",
-    "Cashew/leaf miner": "mineira da folha",
-    "Cashew/red rust": "ferrugem vermelha",
-    "Cassava/bacterial blight": "bacteriose da mandioca",
-    "Cassava/brown spot": "mancha castanha",
-    "Cassava/green mite": "ácaro verde",
-    "Cassava/healthy": "planta saudável",
-    "Cassava/mosaic": "mosaico da mandioca",
-    "Maize/fall armyworm": "lagarta-do-funil",
-    "Maize/grasshoper": "gafanhoto",
-    "Maize/healthy": "planta saudável",
-    "Maize/leaf beetle": "besouro da folha",
-    "Maize/leaf blight": "queima da folha",
-    "Maize/leaf spot": "mancha da folha",
-    "Maize/streak virus": "vírus do estriado",
-    "Tomato/healthy": "planta saudável",
-    "Tomato/leaf blight": "queima da folha",
-    "Tomato/leaf curl": "enrolamento da folha",
-    "Tomato/septoria leaf spot": "septoriose (manchas nas folhas)",
-    "Tomato/verticulium wilt": "murchidão (verticilose)",
+    "Cashew/anthracnose": "antracnose",                                   # técnico, por confirmar localmente
+    "Cashew/gumosis": "gomose",                                           # técnico, por confirmar localmente
+    "Cashew/healthy": "planta saudável",                                  # não é doença
+    "Cashew/leaf miner": "minador da folha",                              # técnico, por confirmar localmente
+    "Cashew/red rust": "ferrugem vermelha (mancha de alga)",              # técnico, por confirmar localmente
+    "Cassava/bacterial blight": "bacteriose da mandioca",                 # técnico, por confirmar localmente
+    "Cassava/brown spot": "mancha castanha (cercosporiose)",              # técnico, por confirmar localmente
+    "Cassava/green mite": "ácaro verde",                                  # técnico, por confirmar localmente
+    "Cassava/healthy": "planta saudável",                                 # não é doença
+    "Cassava/mosaic": "mosaico da mandioca",                              # técnico, por confirmar localmente
+    "Maize/fall armyworm": "lagarta do funil",                            # técnico, por confirmar localmente
+    "Maize/grasshoper": "gafanhoto",                                      # ambíguo: o dataset não indica a espécie
+    "Maize/healthy": "planta saudável",                                   # não é doença
+    "Maize/leaf beetle": "besouro da folha",                              # ambíguo: o dataset não indica a espécie
+    "Maize/leaf blight": "queima das folhas (helmintosporiose)",          # técnico, por confirmar localmente
+    "Maize/leaf spot": "mancha da folha",                                 # ambíguo: pode ser várias manchas foliares
+    "Maize/streak virus": "vírus do estriado",                            # técnico, por confirmar localmente
+    "Tomato/healthy": "planta saudável",                                  # não é doença
+    "Tomato/leaf blight": "queima da folha",                              # ambíguo: requeima ou pinta-preta (alternariose)?
+    "Tomato/leaf curl": "enrolamento da folha (vírus)",                   # técnico, por confirmar localmente
+    "Tomato/septoria leaf spot": "septoriose (manchas nas folhas)",       # técnico, por confirmar localmente
+    "Tomato/verticulium wilt": "murcha-de-verticílio",                    # técnico, por confirmar localmente
 }
 
 PHOTO_TIP = "Tire outra foto da folha doente, de perto e com boa luz."
@@ -64,5 +72,7 @@ def msg_low() -> str:
 
 
 def msg_not_supported(crops_pt: list[str]) -> str:
-    crops_text = ", ".join(crops_pt[:-1]) + " e " + crops_pt[-1] if len(crops_pt) > 1 else crops_pt[0]
-    return f"Não reconheço esta planta. Por agora só conheço {crops_text}. {TECHNICIAN_NOTE}"
+    # Não dizemos "planta": a foto pode nem ser de uma planta.
+    crops_text = ", ".join(crops_pt[:-1]) + " ou " + crops_pt[-1] if len(crops_pt) > 1 else crops_pt[0]
+    return (f"Não consigo reconhecer esta foto. Envie uma foto de perto de uma folha de {crops_text}. "
+            "Um técnico vai ver a sua foto.")

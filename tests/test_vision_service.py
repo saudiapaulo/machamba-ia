@@ -133,7 +133,8 @@ def test_crop_only_says_crop_but_not_disease(make_service) -> None:
 def test_not_supported_lists_known_crops(make_service) -> None:
     diagnosis = make_service([0.10, 0.20, 0.10, 0.20, 0.20, 0.20]).diagnose(Image.new("RGB", (300, 300)))
     assert diagnosis.crop is None
-    assert "milho, tomate e mandioca" in diagnosis.message
+    assert "folha de milho, tomate ou mandioca" in diagnosis.message
+    assert "planta" not in diagnosis.message
 
 
 def test_classifier_receives_preprocessed_batch(labels: LabelSet) -> None:
