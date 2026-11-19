@@ -1,9 +1,14 @@
 """Configuração da aplicação, lida do ficheiro .env e das variáveis de ambiente."""
 
 from functools import lru_cache
+from pathlib import Path
 
-from pydantic import model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Pasta raiz do projecto (machamba-ia/), para os caminhos não dependerem
+# da pasta de onde se corre o servidor.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
@@ -25,8 +30,19 @@ class Settings(BaseSettings):
     vision_high_confidence: float = 0.80
     vision_low_confidence: float = 0.50
 
+    # --- Modelo de visão (gerado pelo notebook de treino) ---
+    model_path: Path = BASE_DIR / "models" / "machamba_efficientnet_b0.pt"
+    labels_path: Path = BASE_DIR / "models" / "labels.json"
+    max_upload_mb: float = 8.0
+
     # --- RAG ---
     rag_min_similarity: float = 0.80
+
+    @field_validator("model_path", "labels_path")
+    @classmethod
+    def resolve_path(cls, value: Path) -> Path:
+        """Caminhos relativos no .env são relativos à pasta do projecto."""
+        return value if value.is_absolute() else BASE_DIR / value
 
     @model_validator(mode="after")
     def check_thresholds(self) -> "Settings":

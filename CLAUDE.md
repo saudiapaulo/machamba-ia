@@ -84,6 +84,12 @@ machamba-ia/
 Crop Pest and Disease Detection (Gana): https://data.mendeley.com/datasets/bwh3zbpkpv
 4 culturas (caju, mandioca, milho, tomate), 22 classes. O autor descarrega-o manualmente para o Google Drive e o treino é feito no Colab.
 
+## Ideias para fases futuras
+- **Fase 4:** o bot pergunta primeiro ao agricultor qual é a cultura; se o modelo discordar, o caso vai para o técnico.
+- **Fase 4:** se o agricultor enviar uma segunda foto e o resultado voltar a ser `media`, encaminhar para o técnico (evitar o ciclo "envie outra foto").
+- **Futuro:** classe "outra coisa" (filtro de entrada, opção C) treinada com as fotos que o técnico marcar como não suportadas. Basta uma nova implementação de `CropGate` em `app/vision/gate.py`.
+- **Validação:** os nomes das doenças em português (`app/vision/messages.py`) têm de ser validados por um extensionista.
+
 ## Estado actual
 (Actualiza esta secção no fim de cada fase.)
 - [x] Fase 0 — Estrutura do projecto
@@ -93,7 +99,11 @@ Crop Pest and Disease Detection (Gana): https://data.mendeley.com/datasets/bwh3z
   - Accuracy por cultura: caju 0.975, mandioca 0.954, milho 0.871, tomate 0.832.
   - Confusões principais: Maize leaf blight ↔ leaf spot (68 no total, nos dois sentidos); doenças do tomate entre si (septoria leaf spot → leaf blight, leaf curl, verticillium wilt; leaf blight → verticillium wilt); Cassava bacterial blight → brown spot (21).
   - Ficheiros em `models/`: `machamba_efficientnet_b0.pt`, `labels.json`, `metrics.json`, `confusion_matrix.png`.
-- [ ] Fase 2 — Serviço de diagnóstico
+- [x] Fase 2 — Serviço de diagnóstico
+  - `app/vision/` (labels, pré-processamento, modelo, filtro de entrada, decisão) e `POST /diagnose`; 34 testes a passar (2 com o modelo real).
+  - Níveis: `alta`, `media`, `so_cultura`, `baixa`, `nao_suportado`; confiança da cultura = soma das probabilidades das suas classes.
+  - PyTorch só-CPU (torch 2.15.0+cpu) a funcionar em Python 3.13 / Windows; ~1 s por foto em CPU.
+  - ⚠️ **Limitação conhecida:** o filtro de entrada (opção A) não rejeita imagens que não são plantas. Em testes com imagens sintéticas (verde liso, ruído, papel, céu), o modelo respondeu sempre "milho — vírus do estriado" com confiança 0.89–0.95. Resolver antes de pôr agricultores reais a usar o sistema (opção B ou C).
 - [ ] Fase 3 — RAG
 - [ ] Fase 4 — Bot do Telegram
 - [ ] Fase 5 — Painel do técnico

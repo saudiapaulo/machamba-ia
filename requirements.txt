@@ -12,10 +12,14 @@ httpx>=0.27,<1.0          # necessário para o TestClient do FastAPI
 pytest>=8.0,<9.0
 
 # --- Fase 2: serviço de diagnóstico (visão) ---
-# torch
-# timm
-# pillow
-# python-multipart        # para receber ficheiros (fotos) no FastAPI
+# O PyTorch vem do índice "só-CPU" (muito mais pequeno: sem as bibliotecas CUDA).
+# O "+cpu" na versão garante que o pip vai buscá-lo a esse índice.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0+cpu
+torchvision==0.29.2+cpu
+timm==1.0.31
+pillow==13.0.0
+python-multipart==0.0.34  # para receber ficheiros (fotos) no FastAPI
 
 # --- Fase 3: RAG e LLM ---
 # anthropic
