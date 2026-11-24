@@ -44,6 +44,7 @@ class DiagnoseResponse(BaseModel):
     is_healthy: bool
     forward_to_technician: bool
     ask_new_photo: bool
+    crop_filter_score: float | None  # pontuação CLIP (0–1); None se o filtro não correu
     top3: list[ClassScoreOut]
 
     @classmethod
@@ -54,7 +55,9 @@ class DiagnoseResponse(BaseModel):
             crop=d.crop, crop_pt=d.crop_pt, crop_confidence=round(p.crop_confidence, 4),
             disease=d.disease, disease_pt=d.disease_pt, confidence=round(p.confidence, 4),
             is_healthy=d.is_healthy, forward_to_technician=d.forward_to_technician,
-            ask_new_photo=d.ask_new_photo, top3=[ClassScoreOut.from_score(s) for s in p.top3],
+            ask_new_photo=d.ask_new_photo,
+            crop_filter_score=None if d.clip_score is None else round(d.clip_score, 4),
+            top3=[ClassScoreOut.from_score(s) for s in p.top3],
         )
 
 

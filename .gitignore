@@ -32,3 +32,6 @@ data/fotos/
 .DS_Store
 Thumbs.db
 .ipynb_checkpoints/
+
+# --- Fotos para avaliar o filtro de entrada (scripts/avaliar_filtro.py) ---
+data/filtro/

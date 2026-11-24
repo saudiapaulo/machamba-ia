@@ -20,6 +20,7 @@ torchvision==0.29.2+cpu
 timm==1.0.31
 pillow==13.0.0
 python-multipart==0.0.34  # para receber ficheiros (fotos) no FastAPI
+open_clip_torch==4.2.2    # filtro de entrada CLIP (pesos ViT-B-32 da LAION, licença MIT)
 
 # --- Fase 3: RAG e LLM ---
 # anthropic

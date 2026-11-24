@@ -103,7 +103,12 @@ Crop Pest and Disease Detection (Gana): https://data.mendeley.com/datasets/bwh3z
   - `app/vision/` (labels, pré-processamento, modelo, filtro de entrada, decisão) e `POST /diagnose`; 34 testes a passar (2 com o modelo real).
   - Níveis: `alta`, `media`, `so_cultura`, `baixa`, `nao_suportado`; confiança da cultura = soma das probabilidades das suas classes.
   - PyTorch só-CPU (torch 2.15.0+cpu) a funcionar em Python 3.13 / Windows; ~1 s por foto em CPU.
-  - ⚠️ **Limitação conhecida:** o filtro de entrada (opção A) não rejeita imagens que não são plantas. Em testes com imagens sintéticas (verde liso, ruído, papel, céu), o modelo respondeu sempre "milho — vírus do estriado" com confiança 0.89–0.95. Resolver antes de pôr agricultores reais a usar o sistema (opção B ou C).
+  - O filtro A sozinho não rejeitava imagens que não são plantas (céu, papel, ruído → "milho — vírus do estriado", 0.89–0.95).
+  - **Filtro de entrada B (CLIP)** adicionado: `ViT-B-32` / `datacomp_xl_s13b_b90k` (LAION, licença MIT), combinado com o filtro A. MobileCLIP excluído: licença Apple só para investigação.
+    - Medido em CPU: ~105–145 ms por foto, ~880 MB de RAM no carregamento (~530 MB depois de libertar a parte de texto), 605 MB em disco (`models/clip/`).
+    - Teste rápido: imagens sintéticas todas rejeitadas (pontuação ≤ 0.13); em 66 fotos reais do CCMT, 13 ficaram abaixo de 0.50, sobretudo confundidas com "folha de mangueira" e "folha de batata-doce".
+    - Se o CLIP falhar ou estiver desligado → nível `nao_verificado` (tudo para o técnico); `/health` mostra `degradado`.
+    - ⚠️ `CLIP_MIN_SCORE=0.50` é provisório: afinar com `scripts/avaliar_filtro.py` e fotos em `data/filtro/` (regra: falsos aceites ≤ 5%).
 - [ ] Fase 3 — RAG
 - [ ] Fase 4 — Bot do Telegram
 - [ ] Fase 5 — Painel do técnico

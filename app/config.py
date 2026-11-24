@@ -35,10 +35,18 @@ class Settings(BaseSettings):
     labels_path: Path = BASE_DIR / "models" / "labels.json"
     max_upload_mb: float = 8.0
 
+    # --- Filtro de entrada CLIP ("é uma das 4 culturas?") ---
+    # Se estiver desligado ou não carregar, todos os diagnósticos vão para o técnico.
+    clip_enabled: bool = True
+    clip_model: str = "ViT-B-32"
+    clip_pretrained: str = "datacomp_xl_s13b_b90k"  # pesos da LAION, licença MIT
+    clip_min_score: float = 0.50  # provisório: afinar com scripts/avaliar_filtro.py
+    clip_cache_dir: Path = BASE_DIR / "models" / "clip"
+
     # --- RAG ---
     rag_min_similarity: float = 0.80
 
-    @field_validator("model_path", "labels_path")
+    @field_validator("model_path", "labels_path", "clip_cache_dir")
     @classmethod
     def resolve_path(cls, value: Path) -> Path:
         """Caminhos relativos no .env são relativos à pasta do projecto."""
@@ -52,6 +60,8 @@ class Settings(BaseSettings):
                 "Os limites de confiança têm de cumprir 0 <= VISION_LOW_CONFIDENCE "
                 "< VISION_HIGH_CONFIDENCE <= 1."
             )
+        if not 0.0 <= self.clip_min_score <= 1.0:
+            raise ValueError("CLIP_MIN_SCORE tem de estar entre 0 e 1.")
         if not 0.0 <= self.rag_min_similarity <= 1.0:
             raise ValueError("RAG_MIN_SIMILARITY tem de estar entre 0 e 1.")
         return self
